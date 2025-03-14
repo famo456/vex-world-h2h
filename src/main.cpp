@@ -199,6 +199,19 @@ void opcontrol() {
         if (controller.get_digital(DIGITAL_L2)) {
             intake.move(-127);
         }
+
+        if (controller.get_digital(DIGITAL_R1)) {
+
+        }
+
+        if (controller.get_digital(DIGITAL_R2)) {
+
+        }
+
+        if (controller.get_digital(DIGITAL_A)) {
+
+        }
+
         if (controller.get_digital(DIGITAL_B)) {
             intake.brake();
         }
@@ -207,6 +220,26 @@ void opcontrol() {
             hook1.toggle();
             hook2.toggle();
             pros::delay(500);
+        }
+
+        if (controller.get_digital(DIGITAL_Y)) {
+
+        }
+
+        if (controller.get_digital(DIGITAL_RIGHT)) {
+
+        }
+
+        if (controller.get_digital(DIGITAL_LEFT)) {
+
+        }
+
+        if (controller.get_digital(DIGITAL_UP)) {
+
+        }
+
+        if (controller.get_digital(DIGITAL_DOWN)) {
+
         }
 
         pros::delay(10);
