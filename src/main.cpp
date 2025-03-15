@@ -16,11 +16,11 @@ pros::Imu imu(11);
 
 // motors
 pros::MotorGroup intake({12, -13}, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
-pros::MotorGroup arm({15, -14}, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
+pros::MotorGroup stakeArm({15}, pros::MotorGearset::red); // intake group - ports 8, 10 (reversed)
 
 // pneumatics
-pros::adi::Pneumatics hook1('A', false); // hook pneumatics on ports A starting in the retracted position
-pros::adi::Pneumatics hook2('B', false); // hook pneumatics on ports A starting in the retracted position
+pros::adi::Pneumatics mogoHook('A', false); // hook pneumatics on ports A starting in the retracted position
+pros::adi::Pneumatics pushArm('B', false); // hook pneumatics on ports A starting in the retracted position
 
 // tracking wheels
 // horizontal tracking wheel encoder. Rotation sensor, port 20, not reversed
