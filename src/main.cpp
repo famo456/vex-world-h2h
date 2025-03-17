@@ -16,7 +16,7 @@ pros::Imu imu(11);
 
 // motors
 pros::MotorGroup intake({12, -13}, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
-pros::Motor stakeArm({15}, pros::MotorGearset::red); // intake group - ports 8, 10 (reversed)
+pros::Motor stakeArm(15, pros::MotorGearset::red); // intake group - ports 8, 10 (reversed)
 
 // pneumatics
 pros::adi::Pneumatics mogoHook('A', false); // hook pneumatics on ports A starting in the retracted position
