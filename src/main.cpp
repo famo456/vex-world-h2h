@@ -133,9 +133,9 @@ void competition_initialize() {}
 
 // get a path used for pure pursuit
 // this needs to be put outside a function
-ASSET(example_txt); // '.' replaced with "_" to make c++ happy
-ASSET(mar2l_txt); // '.' replaced with "_" to make c++ happy
-ASSET(mar2lp2_txt); // '.' replaced with "_" to make c++ happy
+// ASSET(example_txt); // '.' replaced with "_" to make c++ happy
+// ASSET(mar2l_txt); // '.' replaced with "_" to make c++ happy
+// ASSET(mar2lp2_txt); // '.' replaced with "_" to make c++ happy
 
 /**
  * Runs during auto
@@ -163,8 +163,8 @@ void autonomous() {
     // chassis.follow(example_txt  , 15, 4000, false);
     intake.move(127);
     
-    chassis.follow(mar2l_txt, 15, 4000, false);
-    chassis.follow(mar2lp2_txt, 15, 4000, false);
+    // chassis.follow(mar2l_txt, 15, 4000, false);
+    // chassis.follow(mar2lp2_txt, 15, 4000, false);
     // wait until the chassis has traveled 10 inches. Otherwise the code directly after
     // the movement will run immediately
     // Unless its another movement, in which case it will wait
