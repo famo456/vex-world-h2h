@@ -15,7 +15,9 @@ pros::MotorGroup rightMotors({8, 9, 10}, pros::MotorGearset::green); // right mo
 pros::Imu imu(11);
 
 // motors
-pros::MotorGroup intake({12, -13}, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
+pros::Motor lift(13, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
+pros::Motor intake(12, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
+
 pros::Motor stakeArm(15, pros::MotorGearset::red); // intake group - ports 8, 10 (reversed)
 
 // pneumatics
@@ -193,11 +195,13 @@ void opcontrol() {
 
         // button controls
         if (controller.get_digital(DIGITAL_L1)) {
-             intake.move(127);
+             intake.move(-127);
+             lift.move(-127);
         }
 
         if (controller.get_digital(DIGITAL_L2)) {
-            intake.move(-127);
+            intake.move(127);
+            lift.move(127);
         }
 
         if (controller.get_digital(DIGITAL_R1)) {
@@ -205,6 +209,8 @@ void opcontrol() {
         }
 
         if (controller.get_digital(DIGITAL_R2)) {
+            mogoHook.toggle();
+            pros::delay(500);
 
         }
 
@@ -214,11 +220,10 @@ void opcontrol() {
 
         if (controller.get_digital(DIGITAL_B)) {
             intake.brake();
+            lift.brake();
         }
 
         if (controller.get_digital(DIGITAL_X)) {
-            mogoHook.toggle();
-            pros::delay(500);
         }
 
         if (controller.get_digital(DIGITAL_Y)) {
