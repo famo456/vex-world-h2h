@@ -16,9 +16,9 @@ pros::Imu imu(11);
 
 // motors
 pros::Motor lift(13, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
-pros::Motor intake(12, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
+pros::Motor intake(12, pros::MotorGearset::blue); // intake group - ports 8, 10 (reversed)
 
-pros::Motor stakeArm(15, pros::MotorGearset::red); // intake group - ports 8, 10 (reversed)
+pros::Motor ladyBrown(15, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
 
 // pneumatics
 pros::adi::Pneumatics mogoHook('A', false); // hook pneumatics on ports A starting in the retracted position
@@ -239,11 +239,15 @@ void opcontrol() {
         }
 
         if (controller.get_digital(DIGITAL_UP)) {
-
+            ladyBrown.move(-127);
+        } else {
+            ladyBrown.move(0);
         }
 
         if (controller.get_digital(DIGITAL_DOWN)) {
-
+            ladyBrown.move(127);
+        } else {
+            ladyBrown.move(0);
         }
 
         pros::delay(10);
