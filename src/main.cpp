@@ -8,15 +8,21 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-pros::MotorGroup leftMotors({-1, -2, -3}, pros::MotorGearset::green); // left motor group - ports 3 (reversed), 4, 5 (reversed)
-pros::MotorGroup rightMotors({8, 9, 10}, pros::MotorGearset::green); // right motor group - ports 6, 7, 9 (reversed)
+pros::MotorGroup leftMotors({-9, -8, -7}, pros::MotorGearset::green); // left motor group - ports 3 (reversed), 4, 5 (reversed)
+pros::MotorGroup rightMotors({20, 19, 18}, pros::MotorGearset::green); // right motor group - ports 6, 7, 9 (reversed)
 
 // Inertial Sensor on port 10
-pros::Imu imu(11);
+pros::Imu imu(1);
+
+// optical sensor on port 11
+pros::Optical opticalSensor(11); // optical sensor on port 11
+
+// rotation sensor on port 12
+pros::Rotation rotationSensor(12); // rotation sensor on port 12
 
 // motors
-pros::Motor lift(13, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
-pros::Motor intake(12, pros::MotorGearset::blue); // intake group - ports 8, 10 (reversed)
+pros::Motor lift(16, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
+pros::Motor intake(14, pros::MotorGearset::blue); // intake group - ports 8, 10 (reversed)
 
 pros::Motor ladyBrown(15, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
 
