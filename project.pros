@@ -297,7 +297,10 @@
         "version": "8.3.8"
       }
     },
-    "upload_options": {},
+    "upload_options": {
+      "slot": 4,
+      "icon": "alien"
+    },
     "use_early_access": false
   }
 }

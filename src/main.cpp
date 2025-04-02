@@ -96,6 +96,37 @@ lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
 // create the chassis
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
 
+// ladybrown controls
+
+const int numStates = 3;
+//make sure these are in centidegrees (1 degree = 100 centidegrees)
+int states[numStates] = {200, 3000, 10000};
+int currState = 0;
+int target = 0;
+
+void nextState() {
+    currState += 1;
+    if (currState == numStates) {
+        currState = 0;
+    }
+    target = states[currState];
+}
+
+void liftControl() {
+    double lbkp = 0.5;
+    double error = target - rotationSensor.get_position();
+    double velocity = lbkp * error;
+
+    // If the error is small, hold the position by braking the motor
+    if (std::abs(error) < 50) { // Adjust threshold as needed
+        ladyBrown.move(0);
+        ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    } else {
+        ladyBrown.move(velocity);
+        ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+    }
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -127,6 +158,20 @@ void initialize() {
             pros::delay(50);
         }
     });
+
+    rotationSensor.reset_position();
+
+    pros::Task liftControlTask([]{
+        while (true) {
+            pros::lcd::print(3, "State: %d", currState);
+            pros::lcd::print(4, "Target: %d", target);
+            pros::lcd::print(5, "Current: %d", rotationSensor.get_position());
+            pros::lcd::print(6, "Error: %d", target - rotationSensor.get_position());
+            liftControl();
+            pros::delay(20);
+        }
+    });
+
 }
 
 /**
@@ -222,11 +267,11 @@ void opcontrol() {
         }
 
         if (controller.get_digital(DIGITAL_A)) {
-
+            nextState();
         }
 
         if (controller.get_digital(DIGITAL_B)) {
-           
+           ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         }
 
         if (controller.get_digital(DIGITAL_X)) {
@@ -245,13 +290,13 @@ void opcontrol() {
         }
 
         if (controller.get_digital(DIGITAL_UP)) {
-            ladyBrown.move(-127);
-        } else if (controller.get_digital(DIGITAL_DOWN)) {
-            ladyBrown.move(127);
-        } else {
-            ladyBrown.move(0);
+        //     ladyBrown.move(-127);
+        // } else if (controller.get_digital(DIGITAL_DOWN)) {
+        //     ladyBrown.move(127);
+        // } else {
+        //     ladyBrown.move(0);
         }
 
-        pros::delay(10);
+        pros::delay(20);
     }
 }
