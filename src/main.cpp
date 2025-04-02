@@ -226,8 +226,7 @@ void opcontrol() {
         }
 
         if (controller.get_digital(DIGITAL_B)) {
-            intake.brake();
-            lift.brake();
+           
         }
 
         if (controller.get_digital(DIGITAL_X)) {
