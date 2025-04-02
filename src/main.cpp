@@ -246,11 +246,7 @@ void opcontrol() {
 
         if (controller.get_digital(DIGITAL_UP)) {
             ladyBrown.move(-127);
-        } else {
-            ladyBrown.move(0);
-        }
-
-        if (controller.get_digital(DIGITAL_DOWN)) {
+        } else if (controller.get_digital(DIGITAL_DOWN)) {
             ladyBrown.move(127);
         } else {
             ladyBrown.move(0);
