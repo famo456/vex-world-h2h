@@ -100,7 +100,7 @@ lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors
 
 const int numStates = 3;
 //make sure these are in centidegrees (1 degree = 100 centidegrees)
-int states[numStates] = {200, 3000, 10000};
+int states[numStates] = {0, 3100, 12300};
 int currState = 0;
 int target = 0;
 
@@ -113,7 +113,7 @@ void nextState() {
 }
 
 void liftControl() {
-    double lbkp = 0.5;
+    double lbkp = 0.01;
     double error = target - rotationSensor.get_position();
     double velocity = lbkp * error;
 
@@ -168,7 +168,7 @@ void initialize() {
             pros::lcd::print(5, "Current: %d", rotationSensor.get_position());
             pros::lcd::print(6, "Error: %d", target - rotationSensor.get_position());
             liftControl();
-            pros::delay(20);
+            pros::delay(30);
         }
     });
 
@@ -268,6 +268,7 @@ void opcontrol() {
 
         if (controller.get_digital(DIGITAL_A)) {
             nextState();
+            pros::delay(1000);
         }
 
         if (controller.get_digital(DIGITAL_B)) {
