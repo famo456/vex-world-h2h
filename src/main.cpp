@@ -127,24 +127,34 @@ void liftControl() {
     }
 }
 
+std::string teamColor = "red"; // Default team color
+std::string startSide = "right"; // Default start side
+
 void sortRings() {
     while (true) {
         opticalSensor.set_led_pwm(100); // Turn on the optical sensor LED at full brightness
         pros::c::optical_rgb_s_t color = opticalSensor.get_rgb(); // Get the RGB values
 
-        // Check if the detected color is red
-        if (color.red > color.blue && color.red > color.green && color.red > 100) { // Adjust threshold as needed
-            pros::delay(50); // Wait for 50ms
-            lift.move(0); // Stop the lift
-            pros::delay(750); // Wait for 750ms
+        if (teamColor == "red") {
+            // Check if the detected color is red
+            if (color.red > color.blue && color.red > color.green && color.red > 100) { // Adjust threshold as needed
+                pros::delay(50); // Wait for 50ms
+                lift.move(0); // Stop the lift
+                pros::delay(750); // Wait for 750ms
+            }
+        } else if (teamColor == "blue") {
+            // Check if the detected color is blue
+            if (color.blue > color.red && color.blue > color.green && color.blue > 100) { // Adjust threshold as needed
+                pros::delay(50); // Wait for 50ms
+                lift.move(0); // Stop the lift
+                pros::delay(750); // Wait for 750ms
+            }
         }
 
         pros::delay(20); // Prevent task from hogging CPU
     }
 }
 
-std::string teamColor = "red"; // Default team color
-std::string startSide = "right"; // Default start side
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
