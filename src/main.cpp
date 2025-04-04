@@ -127,6 +127,24 @@ void liftControl() {
     }
 }
 
+void sortRings() {
+    while (true) {
+        opticalSensor.set_led_pwm(100); // Turn on the optical sensor LED at full brightness
+        pros::c::optical_rgb_s_t color = opticalSensor.get_rgb(); // Get the RGB values
+
+        // Check if the detected color is red
+        if (color.red > color.blue && color.red > color.green && color.red > 100) { // Adjust threshold as needed
+            pros::delay(50); // Wait for 50ms
+            lift.move(0); // Stop the lift
+            pros::delay(750); // Wait for 750ms
+        }
+
+        pros::delay(20); // Prevent task from hogging CPU
+    }
+}
+
+std::string teamColor = "red"; // Default team color
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -136,6 +154,18 @@ void liftControl() {
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
     chassis.calibrate(); // calibrate sensors
+
+    // Create a button on the LLMU to toggle teamColor
+    pros::lcd::register_btn1_cb([]() {
+        if (teamColor == "red") {
+            teamColor = "blue";
+        } else {
+            teamColor = "red";
+        }
+        pros::lcd::set_text(7, "Team Color: " + teamColor); // Update button text
+    });
+
+    pros::lcd::set_text(7, "Team Color: " + teamColor); // Initial display
 
     // the default rate is 50. however, if you need to change the rate, you
     // can do the following.
@@ -172,6 +202,8 @@ void initialize() {
         }
     });
 
+    // Start the sortRings task
+    pros::Task ringSorter(sortRings);
 }
 
 /**
@@ -257,13 +289,13 @@ void opcontrol() {
         }
 
         if (controller.get_digital(DIGITAL_R1)) {
-
+            pushArm.toggle();
+            pros::delay(500);
         }
 
         if (controller.get_digital(DIGITAL_R2)) {
             mogoHook.toggle();
             pros::delay(500);
-
         }
 
         if (controller.get_digital(DIGITAL_A)) {
@@ -272,7 +304,7 @@ void opcontrol() {
         }
 
         if (controller.get_digital(DIGITAL_B)) {
-           ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
         }
 
         if (controller.get_digital(DIGITAL_X)) {
