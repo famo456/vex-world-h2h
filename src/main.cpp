@@ -144,6 +144,7 @@ void sortRings() {
 }
 
 std::string teamColor = "red"; // Default team color
+std::string startSide = "right"; // Default start side
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -156,16 +157,28 @@ void initialize() {
     chassis.calibrate(); // calibrate sensors
 
     // Create a button on the LLMU to toggle teamColor
-    pros::lcd::register_btn1_cb([]() {
+    pros::lcd::register_btn0_cb([]() {
         if (teamColor == "red") {
             teamColor = "blue";
         } else {
             teamColor = "red";
         }
-        pros::lcd::set_text(7, "Team Color: " + teamColor); // Update button text
+        pros::lcd::set_text(6, "Team Color: " + teamColor); // Update button text
     });
 
-    pros::lcd::set_text(7, "Team Color: " + teamColor); // Initial display
+    pros::lcd::set_text(6, "Team Color: " + teamColor); // Initial display
+
+    // Create a button on the LLMU to toggle teamColor
+    pros::lcd::register_btn1_cb([]() {
+        if (startSide == "right") {
+            startSide = "left";
+        } else {
+            startSide = "right";
+        }
+        pros::lcd::set_text(7, "Start Side: " + startSide); // Update button text
+    });
+
+    pros::lcd::set_text(7, "Start Side: " + startSide); // Initial display
 
     // the default rate is 50. however, if you need to change the rate, you
     // can do the following.
@@ -193,10 +206,10 @@ void initialize() {
 
     pros::Task liftControlTask([]{
         while (true) {
-            pros::lcd::print(3, "State: %d", currState);
-            pros::lcd::print(4, "Target: %d", target);
-            pros::lcd::print(5, "Current: %d", rotationSensor.get_position());
-            pros::lcd::print(6, "Error: %d", target - rotationSensor.get_position());
+            // pros::lcd::print(3, "State: %d", currState);
+            pros::lcd::print(3, "Target: %d", target);
+            pros::lcd::print(4, "Current: %d", rotationSensor.get_position());
+            pros::lcd::print(5, "Error: %d", target - rotationSensor.get_position());
             liftControl();
             pros::delay(30);
         }
