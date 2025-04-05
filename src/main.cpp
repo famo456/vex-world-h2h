@@ -3,7 +3,7 @@
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/adi.h"     // IWYU pragma: keep
-//testing git
+
 // controller
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
@@ -11,26 +11,28 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup leftMotors({-18, -19, -20}, pros::MotorGearset::green); // left motor group - ports 3 (reversed), 4, 5 (reversed)
 pros::MotorGroup rightMotors({7, 8, 9}, pros::MotorGearset::green); // right motor group - ports 6, 7, 9 (reversed)
 
-// Inertial Sensor on port 10
+// Inertial Sensor on port 1
 pros::Imu imu(1);
 
 // optical sensor on port 11
-pros::Optical opticalSensor(11); // optical sensor on port 11
+pros::Optical opticalSensor(11);
 
 // rotation sensor on port 12
-pros::Rotation rotationSensor(12); // rotation sensor on port 12
+pros::Rotation rotationSensor(12);
 
 // motors
-pros::Motor lift(16, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
-pros::Motor intake(14, pros::MotorGearset::blue); // intake group - ports 8, 10 (reversed)
+pros::Motor lift(16, pros::MotorGearset::green); // lift motor - port 16
+pros::Motor intake(14, pros::MotorGearset::blue); // intake motor - ports 14
 
-pros::Motor ladyBrown(15, pros::MotorGearset::green); // intake group - ports 8, 10 (reversed)
+pros::Motor ladyBrown(15, pros::MotorGearset::green); // lady brown - ports 15
 
 // pneumatics
 pros::adi::Pneumatics mogoHook('A', false); // hook pneumatics on ports A starting in the retracted position
-pros::adi::Pneumatics pushArm('B', false); // hook pneumatics on ports A starting in the retracted position
+pros::adi::Pneumatics pushArm('B', false); // push arm pneumatics on ports B starting in the retracted position
+
 
 // tracking wheels
+
 // horizontal tracking wheel encoder. Rotation sensor, port 20, not reversed
 pros::Rotation horizontalEnc(16);
 // vertical tracking wheel encoder. Rotation sensor, port 11, reversed
@@ -112,7 +114,7 @@ void nextState() {
     target = states[currState];
 }
 
-void liftControl() {
+void ladyBrownControl() {
     double lbkp = 0.01;
     double error = target - rotationSensor.get_position();
     double velocity = lbkp * error;
@@ -130,24 +132,31 @@ void liftControl() {
 std::string teamColor = "red"; // Default team color
 std::string startSide = "right"; // Default start side
 
+// color sorting
+
 void sortRings() {
     while (true) {
         opticalSensor.set_led_pwm(100); // Turn on the optical sensor LED at full brightness
         pros::c::optical_rgb_s_t color = opticalSensor.get_rgb(); // Get the RGB values
 
+// TODO: try to get the color hue from the optical sensor instead of the RGB values
+
         if (teamColor == "red") {
             // Check if the detected color is red
             if (color.red > color.blue && color.red > color.green && color.red > 100) { // Adjust threshold as needed
-                pros::delay(50); // Wait for 50ms
+                pros::delay(50); // Wait for 50ms before stopping the lift
+
+// TODO: try reversing the lift instead of stop the lift and delay
+
                 lift.move(0); // Stop the lift
-                pros::delay(750); // Wait for 750ms
+                pros::delay(750); // Wait for 750ms before moving on
             }
         } else if (teamColor == "blue") {
             // Check if the detected color is blue
             if (color.blue > color.red && color.blue > color.green && color.blue > 100) { // Adjust threshold as needed
-                pros::delay(50); // Wait for 50ms
+                pros::delay(50); // Wait for 50ms before stopping the lift
                 lift.move(0); // Stop the lift
-                pros::delay(750); // Wait for 750ms
+                pros::delay(750); // Wait for 750ms before moving on
             }
         }
 
@@ -166,7 +175,7 @@ void initialize() {
     pros::lcd::initialize(); // initialize brain screen
     chassis.calibrate(); // calibrate sensors
 
-    // Create a button on the LLMU to toggle teamColor
+    // Create a button on the LLEMU to toggle teamColor
     pros::lcd::register_btn0_cb([]() {
         if (teamColor == "red") {
             teamColor = "blue";
@@ -220,8 +229,8 @@ void initialize() {
             pros::lcd::print(3, "Target: %d", target);
             pros::lcd::print(4, "Current: %d", rotationSensor.get_position());
             pros::lcd::print(5, "Error: %d", target - rotationSensor.get_position());
-            liftControl();
-            pros::delay(30);
+            ladyBrownControl();
+            pros::delay(50);
         }
     });
 
@@ -346,11 +355,7 @@ void opcontrol() {
         }
 
         if (controller.get_digital(DIGITAL_UP)) {
-        //     ladyBrown.move(-127);
-        // } else if (controller.get_digital(DIGITAL_DOWN)) {
-        //     ladyBrown.move(127);
-        // } else {
-        //     ladyBrown.move(0);
+            
         }
 
         pros::delay(20);
