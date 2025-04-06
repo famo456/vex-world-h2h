@@ -320,19 +320,16 @@ void opcontrol() {
             lift.brake();
         }
 
-        if (controller.get_digital(DIGITAL_R1)) {
+        if (controller.get_digital_new_press(DIGITAL_R1)) {
             pushArm.toggle();
-            pros::delay(500);
         }
 
-        if (controller.get_digital(DIGITAL_R2)) {
+        if (controller.get_digital_new_press(DIGITAL_R2)) {
             mogoHook.toggle();
-            pros::delay(500);
         }
 
-        if (controller.get_digital(DIGITAL_A)) {
+        if (controller.get_digital_new_press(DIGITAL_A)) {
             nextState();
-            pros::delay(1000);
         }
 
         if (controller.get_digital(DIGITAL_B)) {
