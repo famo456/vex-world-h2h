@@ -37,10 +37,11 @@ pros::adi::Pneumatics pushArm('B', false); // push arm pneumatics on ports B sta
 pros::Rotation horizontalEnc(16);
 // vertical tracking wheel encoder. Rotation sensor, port 11, reversed
 pros::Rotation verticalEnc(-17);
+
 // horizontal tracking wheel. 2.75" diameter, 5.75" offset, back of the robot (negative)
-lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_275, -5.75);
+// lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_275, -5.75);
 // vertical tracking wheel. 2.75" diameter, 2.5" offset, left of the robot (negative)
-lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_275, -2.5);
+// lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_275, -2.5);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
@@ -76,9 +77,9 @@ lemlib::ControllerSettings angularController(2, // proportional gain (kP)
 );
 
 // sensors for odometry
-lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
+lemlib::OdomSensors sensors(nullptr, // vertical tracking wheel
                             nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
-                            &horizontal, // horizontal tracking wheel
+                            nullptr, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
                             &imu // inertial sensor
 );
@@ -102,7 +103,7 @@ lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors
 
 const int numStates = 3;
 //make sure these are in centidegrees (1 degree = 100 centidegrees)
-int states[numStates] = {0, 3100, 12300};
+int states[numStates] = {0, 5000, 14500};
 int currState = 0;
 int target = 0;
 
@@ -148,8 +149,8 @@ void sortRings() {
 
 // TODO: try reversing the lift instead of stop the lift and delay
 
-                lift.move(0); // Stop the lift
-                pros::delay(750); // Wait for 750ms before moving on
+                lift.move(-90); // Stop the lift
+                pros::delay(50); // Wait for 750ms before moving on
             }
         } else if (teamColor == "blue") {
             // Check if the detected color is blue
@@ -235,7 +236,7 @@ void initialize() {
     });
 
     // Start the sortRings task
-    pros::Task ringSorter(sortRings);
+    // pros::Task ringSorter(sortRings);
 }
 
 /**
@@ -261,7 +262,7 @@ void competition_initialize() {}
  */
 void autonomous() {
     // Move to x: 20 and y: 15, and face heading 90. Timeout set to 4000 ms
-    // chassis.moveToPose(20, 15, 90, 4000);
+    chassis.moveToPose(20, 15, 90, 4000);
     // Move to x: 0 and y: 0 and face heading 270, going backwards. Timeout set to 4000ms
     // chassis.moveToPose(0, 0, 270, 4000, {.forwards = false});
     // cancel the movement after it has traveled 10 inches
@@ -278,7 +279,7 @@ void autonomous() {
     // following the path with the back of the robot (forwards = false)
     // see line 116 to see how to define a path
     // chassis.follow(example_txt  , 15, 4000, false);
-    intake.move(127);
+    // intake.move(127);
     
     // chassis.follow(mar2l_txt, 15, 4000, false);
     // chassis.follow(mar2lp2_txt, 15, 4000, false);
@@ -309,12 +310,13 @@ void opcontrol() {
         // delay to save resources
 
         // button controls
-        if (controller.get_digital(DIGITAL_L1)) {
+        if (controller.get_digital(DIGITAL_L1)) { // normal intake and lift
              intake.move(-127);
              lift.move(-127);
-        } else if (controller.get_digital(DIGITAL_L2)) {
+        } else if (controller.get_digital(DIGITAL_L2)) { // reverse intake and lift
             intake.move(127);
             lift.move(127);
+            // sortRings(); // Call the ring sorting function
         } else {
             intake.brake();
             lift.brake();
