@@ -260,9 +260,23 @@ void competition_initialize() {}
  *
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
-void autonomous() {
+void autonomous() { 
+   //drive_.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
+   chassis.setPose(0, 0, 0);
+   // Move to first stake, then a bit farther at a slower speed for alignment
+   chassis.moveToPoint(0, -27, 1800, {.forwards = false, .maxSpeed = 60}, true);
+   chassis.moveToPoint(0, -35, 2050, {.forwards = false, .maxSpeed = 30}, true);
+   chassis.waitUntilDone();
+   pros::delay(500);
+   // Grab the closest MOGO mech
+   mogoHook.extend();
+   pros::delay(1500);
+   // Load the ring onto the stake
+   intake.move_velocity(600);
+//    HookMotor.move_velocity(200);
+   pros::delay(3000);
     // Move to x: 20 and y: 15, and face heading 90. Timeout set to 4000 ms
-    chassis.moveToPose(20, 15, 90, 4000);
+    // chassis.moveToPose(20, 15, 90, 4000);
     // Move to x: 0 and y: 0 and face heading 270, going backwards. Timeout set to 4000ms
     // chassis.moveToPose(0, 0, 270, 4000, {.forwards = false});
     // cancel the movement after it has traveled 10 inches
