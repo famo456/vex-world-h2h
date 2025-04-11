@@ -18,13 +18,13 @@ pros::Imu imu(1);
 pros::Optical opticalSensor(11);
 
 // rotation sensor on port 12
-pros::Rotation rotationSensor(12);
+pros::Rotation rotationSensor(-12);
 
 // motors
 pros::Motor lift(16, pros::MotorGearset::green); // lift motor - port 16
 pros::Motor intake(14, pros::MotorGearset::blue); // intake motor - ports 14
 
-pros::Motor ladyBrown(15, pros::MotorGearset::green); // lady brown - ports 15
+pros::Motor ladyBrown(-15, pros::MotorGearset::green); // lady brown - ports 15
 
 // pneumatics
 pros::adi::Pneumatics mogoHook('A', false); // hook pneumatics on ports A starting in the retracted position
@@ -34,9 +34,9 @@ pros::adi::Pneumatics pushArm('B', false); // push arm pneumatics on ports B sta
 // tracking wheels
 
 // horizontal tracking wheel encoder. Rotation sensor, port 20, not reversed
-pros::Rotation horizontalEnc(16);
+// pros::Rotation horizontalEnc(16);
 // vertical tracking wheel encoder. Rotation sensor, port 11, reversed
-pros::Rotation verticalEnc(-17);
+// pros::Rotation verticalEnc(-17);
 
 // horizontal tracking wheel. 2.75" diameter, 5.75" offset, back of the robot (negative)
 // lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_275, -5.75);
@@ -103,7 +103,7 @@ lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors
 
 const int numStates = 3;
 //make sure these are in centidegrees (1 degree = 100 centidegrees)
-int states[numStates] = {0, 5000, 14500};
+int states[numStates] = {0, 2000, 11500};
 int currState = 0;
 int target = 0;
 
@@ -116,12 +116,12 @@ void nextState() {
 }
 
 void ladyBrownControl() {
-    double lbkp = 0.01;
+    double lbkp = 0.02;
     double error = target - rotationSensor.get_position();
     double velocity = lbkp * error;
 
     // If the error is small, hold the position by braking the motor
-    if (std::abs(error) < 50) { // Adjust threshold as needed
+    if (std::abs(error) < 250) { // Adjust threshold as needed
         ladyBrown.move(0);
         ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     } else {
