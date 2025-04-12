@@ -48,7 +48,7 @@ lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
                               &rightMotors, // right motor group
                               12.5, // 10 inch track width
                               lemlib::Omniwheel::NEW_4, // using new 4" omnis
-                              400, // drivetrain rpm is 360
+                              400, // drivetrain rpm is 400
                               8 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
 
@@ -107,7 +107,7 @@ int states[numStates] = {0, 2000, 11500};
 int currState = 0;
 int target = 0;
 
-void nextState() {
+void ladyBrownNextState() {
     currState += 1;
     if (currState == numStates) {
         currState = 0;
@@ -314,7 +314,10 @@ void opcontrol() {
     // controller
     // loop to continuously update motors
 
+// TODO: check if hookToggle is needed
+
     bool hookToggle = false;
+
     while (true) {
         // get joystick positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -345,7 +348,7 @@ void opcontrol() {
         }
 
         if (controller.get_digital_new_press(DIGITAL_A)) {
-            nextState();
+            ladyBrownNextState();
         }
 
         if (controller.get_digital(DIGITAL_B)) {
