@@ -103,7 +103,7 @@ lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors
 
 const int numStates = 3;
 //make sure these are in centidegrees (1 degree = 100 centidegrees)
-int states[numStates] = {0, 2000, 11500};
+int states[numStates] = {0, 2000, 12500};
 int currState = 0;
 int target = 0;
 
